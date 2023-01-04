@@ -1,10 +1,11 @@
 const { SlashCommandBuilder } = require("discord.js");
 
+
 module.exports = { 
     data: new SlashCommandBuilder()
-        .setName('fernando')
+        .setName('owners')
         .setDescription('Replies who is the owner of the server!'),
     async execute(interaction){
-        await interaction.reply('The owner of ther server is <@409912503200645130>');
+        await interaction.reply( {content: 'The owners of the server is <@409912503200645130> and <@415199906920267787>'});
     },
 }
