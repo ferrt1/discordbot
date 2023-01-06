@@ -11,15 +11,18 @@ module.exports = {
             option
                 .setName('canal')
                 .setDescription('canal de bienvenidas')
+                .setRequired(true))
+        .addStringOption(option =>
+            option
+                .setName('fondo')
+                .setDescription('imagen para el canal de bienvenida')
                 .setRequired(true)),
 
     async execute(interaction) {
 
-        let setupProfile = await Setup.findOne({ guildId: interaction.guild.id });
-    
+        let setupProfile = await Setup.findOneAndUpdate({ guildId: interaction.guild.id });
         let canalBienvenida = interaction.options.getString('canal');
-
-        console.log(canalBienvenida);
+        let fondoBienvenida = interaction.options.getString('fondo');
 
         const embedWelcomeAccept = new EmbedBuilder()
             .setColor("#00800")
@@ -33,11 +36,13 @@ module.exports = {
             .setColor('Red')
             .setTitle('Este canal ya era de bienvenida!')
 
+
         if (!setupProfile) {
             setupProfile = await new Setup({
+                _id: mongoose.Types.ObjectId(),
                 guildId: interaction.guild.id,
                 bienvenidas: {
-                    canal: canalBienvenida, fondo: 'https://assets.pikiran-rakyat.com/crop/0x0:0x0/x/photo/2022/11/05/4212036423.jpg', mensaje: "Bienvenido {usuario}, pasala bien!"
+                    canal: canalBienvenida, fondo: fondoBienvenida, mensaje: "Bienvenido {usuario}, pasala bien!"
                 },
             });
 
@@ -48,9 +53,11 @@ module.exports = {
             
         } else {
             if(canalBienvenida != setupProfile.bienvenidas.canal){
-                setupProfile.update({
-                    bienvenidas:{
-                        canal : canalBienvenida
+                await Setup.findOneAndUpdate( { guildId: interaction.guild.id}, {
+                    bienvenidas: {
+                    canal: canalBienvenida, 
+                    fondo: fondoBienvenida, 
+                    mensaje: "Bienvenido {usuario}, pasala bien!"
                     }
                 })
                 await interaction.reply({embeds: [ embedCanalChange ]});

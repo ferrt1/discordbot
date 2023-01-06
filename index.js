@@ -55,9 +55,11 @@ for (const file of eventFilesMongo){
 	}
 }
 
-client.login(process.env.TOKEN);
 
 welcome(client);
+
+client.login(process.env.TOKEN);
+
 
 (async () => {
 	await connect(process.env.DATABASE_TOKEN).catch(console.error);
